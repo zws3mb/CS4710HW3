@@ -81,7 +81,7 @@ if __name__ == "__main__":
         # Give each negotiator their preferred item ordering
         negotiator_a.initialize(a_order, num_iters)
         negotiator_b.initialize(b_order, num_iters)
-        for i in range(0,randint(4,20)):
+        for i in range(0,randint(1,2)):
             # Get the result of the negotiation
             if i%2==0:
                 (result, order, count) = negotiate(num_iters, negotiator_a, negotiator_b)

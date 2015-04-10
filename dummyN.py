@@ -104,18 +104,14 @@ class dummy_Negotiator(BaseNegotiator):
             return self.offer
         else:
             self.their_offers.append(offer)
-            if len(self.their_offers)>1: #not their first offer
-                if self.their_utilities[len(self.their_utilities)-1]<self.their_utilities[len(self.their_utilities)-2]: #coming down
-                    their_i=self.ith_in_our_space(offer)
-                    last_i=self.ith_in_our_space(self.last_offer)
-                    print 'Haggling:'+str(last_i)+' '+str(their_i)
-                    if their_i-last_i>0:        #is there room to come down
-                        dec_off= self.my_offerspace[last_i+(their_i-last_i)/2][0]
-                    else:
-                        dec_off=self.my_offerspace[last_i][0]
-                else:                   #holding out or wrong direction
-                    print 'Being stubborn'
-                    dec_off=self.last_offer
+            if len(self.their_offers)>1: #not their first offer, always come down
+                their_i=self.ith_in_our_space(offer)
+                last_i=self.ith_in_our_space(self.last_offer)
+                print 'Haggling:'+str(last_i)+' '+str(their_i)
+                if their_i-last_i>0:        #is there room to come down
+                    dec_off= self.my_offerspace[last_i+(their_i-last_i)/2][0] #come down half the distance
+                else:
+                    dec_off=self.my_offerspace[last_i][0] #repeat the last offer
             else:   #their first offer
                 print 'refuse to budge'
                 dec_off=self.preferences[:]

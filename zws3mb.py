@@ -8,6 +8,8 @@ class zws3mb_Negotiator(BaseNegotiator):
         # Performs per-round initialization - takes in a list of items, ordered by the item's
         # preferability for this negotiator
         # You can do other work here, but still need to store the preferences
+#    def __init__(self):
+
     def initialize(self, preferences, iter_limit):
         BaseNegotiator.initialize(self,preferences,iter_limit)
         self.round_count=0
