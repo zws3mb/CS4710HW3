@@ -8,19 +8,20 @@ class zws3mb_Negotiator(BaseNegotiator):
         # Performs per-round initialization - takes in a list of items, ordered by the item's
         # preferability for this negotiator
         # You can do other work here, but still need to store the preferences
-#    def __init__(self):
-
-    def initialize(self, preferences, iter_limit):
-        BaseNegotiator.initialize(self,preferences,iter_limit)
+    def __init__(self):
+        BaseNegotiator.__init__(self)
         self.round_count=0
         self.first=False
         self.their_offers=[]
         self.their_utilities=[]
         self.our_score=0
         self.their_score=0
-        self.offer_space()
         self.last_offer=None
         self.encounter=0
+        self.agreed=False
+    def initialize(self, preferences, iter_limit):
+        BaseNegotiator.initialize(self,preferences,iter_limit)
+        self.offer_space()
 
 
     # make_offer(self : BaseNegotiator, offer : list(String)) --> list(String)
@@ -58,43 +59,52 @@ class zws3mb_Negotiator(BaseNegotiator):
         return -1;
     def tic_tac_check(self,offer):
         if self.round_count+1==self.iter_limit: #last round
-            print 'Last round behavior',
+            print 'Last round behavior'+str(self.__class__),
             if self.first:      #We accept/receive this final offer
                 if self.their_score>self.our_score:
-                    if self.encounter>=3:   #potentially last time we see this opponenet
-                        if self.our_score>self.my_offerspace[0][1]:#>len(self.preferences):
-                            return self.preferences[:] #spite them
-                        else:
-                            print 'Try to accept'
-                            temp=self.offer
-                            self.offer=self.their_offers[len(self.their_offers)-1]
-                            val=self.utility()
-                            self.offer=temp
-                            if val>0:
+                    if self.encounter>=0:   #potentially last time we see this opponenet
+                        print ' Try to accept ',
+                        temp=self.offer
+                        self.offer=self.their_offers[len(self.their_offers)-1]
+                        val=self.utility()
+                        self.offer=temp
+                        if val>-len(self.preferences):
+
                                 return self.their_offers[len(self.their_offers)-1] #if we aren't hurt by accepting,
-                            else:
-                                return self.preferences[:]                          # or screw both of us!
+                        else:
+                            print("Deny, hurts more to accept than deny")
+                            return self.preferences[:]                          # or screw both of us!
                     else:                   #can we manipulate them into being softer?
-                        print 'not the last encounter, deny'
+                        print 'not the last encounter, deny for the first time'
                         return self.preferences[:]
                 else:
-                    print 'Accepted!'
-                    return self.their_offers[len(self.their_offers)-1] #we're ahead, can afford to be gracious and accept
+                    print("Going last, even if we are ahead, only accept if smart"),
+                    print 'Try to accept,'
+                    temp=self.offer
+                    self.offer=self.their_offers[len(self.their_offers)-1]
+                    val=self.utility()
+                    self.offer=temp
+                    if val>-len(self.preferences):
+
+                        return self.their_offers[len(self.their_offers)-1] #if we aren't hurt by accepting,
+                    else:
+                        print("Deny, hurts more to accept than deny")
+                        return self.preferences[:]                          # or screw both of us!
             else:               # We make final offer
-                if self.their_score >self.our_score:    #been beating usd
-                    if not self.agreed:     #They may have spited us:
+                if self.their_score >self.our_score:    #been beating us
+                    if not self.agreed:     #If it's in them to cut us, offer them something "fair"
                         return offer
                     else:
                         print 'Come down some',
                         our_i=self.ith_in_our_space(self.last_offer)
-                        return self.my_offerspace[our_i+1][0]  #be ballsy
-                else:
-                    if self.encounter>=3:
+                        return self.my_offerspace[our_i][0]  #
+                else:                                   #continue aggressive policy
+                    if self.encounter>0 and not self.agreed:
                         our_i=self.ith_in_our_space(self.last_offer)
-                        return self.my_offerspace[our_i+1][0]  #be ballsy
+                        return self.my_offerspace[our_i+1][0]  #come down some
                         #return self.preferences[:]
                     else:
-                        return offer
+                        return self.preferences[:] #be greedy
         return offer
     def make_offer(self, offer):
         dec_off=None

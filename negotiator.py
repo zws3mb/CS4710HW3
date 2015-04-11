@@ -10,7 +10,7 @@ class Negotiator(BaseNegotiator):
     # Override the make_offer method from BaseNegotiator to accept a given offer 5%
     # of the time, and return a random permutation the rest of the time.   
     def make_offer(self, offer):
-        if random() < 0.05 and offer:
+        if False:#random() < 0.05 and offer:
             # Very important - we save the offer we're going to return as self.offer
             self.offer = offer[:]
             return offer

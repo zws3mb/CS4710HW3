@@ -59,6 +59,7 @@ class dummy_Negotiator(BaseNegotiator):
         if self.round_count+1==self.iter_limit: #last round
             print 'Last round behavior',
             if self.first:      #We accept/receive this final offer
+                return self.their_offers[len(self.their_offers)-1]
                 if self.their_score>self.our_score:
                     if self.encounter>=3:   #potentially last time we see this opponenet
                         if self.our_score>self.my_offerspace[0][1]:#>len(self.preferences):
@@ -108,7 +109,7 @@ class dummy_Negotiator(BaseNegotiator):
                 their_i=self.ith_in_our_space(offer)
                 last_i=self.ith_in_our_space(self.last_offer)
                 print 'Haggling:'+str(last_i)+' '+str(their_i)
-                if their_i-last_i>0:        #is there room to come down
+                if their_i-last_i>=0:        #is there room to come down
                     dec_off= self.my_offerspace[last_i+(their_i-last_i)/2][0] #come down half the distance
                 else:
                     dec_off=self.my_offerspace[last_i][0] #repeat the last offer

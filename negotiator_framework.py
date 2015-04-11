@@ -81,7 +81,9 @@ if __name__ == "__main__":
         # Give each negotiator their preferred item ordering
         negotiator_a.initialize(a_order, num_iters)
         negotiator_b.initialize(b_order, num_iters)
-        for i in range(0,randint(1,2)):
+        numf=0
+        rounds=randint(4,10)
+        for i in range(0,rounds):
             # Get the result of the negotiation
             if i%2==0:
                 (result, order, count) = negotiate(num_iters, negotiator_a, negotiator_b)
@@ -94,6 +96,8 @@ if __name__ == "__main__":
                 # Update each negotiator with the final result, points assigned, and number of iterations taken to reach an agreement
                 negotiator_a.receive_results(results)
                 negotiator_b.receive_results(results)
+                if result:
+                    numf+=1
                 print("{} negotiation:\n\tNegotiator A: {}\n\tNegotiator B: {}".format("Successful" if result else "Failed", points_a, points_b))
             else:
                 (result, order, count) = negotiate(num_iters, negotiator_b, negotiator_a)
@@ -106,5 +110,8 @@ if __name__ == "__main__":
                 # Update each negotiator with the final result, points assigned, and number of iterations taken to reach an agreement
                 negotiator_a.receive_results(results)
                 negotiator_b.receive_results(results)
+                if result:
+                    numf+=1
                 print("{} negotiation:\n\tNegotiator A: {}\n\tNegotiator B: {}".format("Successful" if result else "Failed", points_b, points_a))
+        print(str(numf)+" Successful of "+str(rounds))
     print("Final result:\n\tNegotiator A: {}\n\tNegotiator B: {}".format(score_a, score_b))
