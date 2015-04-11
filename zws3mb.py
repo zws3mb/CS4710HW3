@@ -2,6 +2,7 @@ __author__ = 'Zachary'
 from negotiator_base import BaseNegotiator
 from itertools import permutations
 from random import sample
+from functools import reduce
 
 class zws3mb_Negotiator(BaseNegotiator):
     # initialize(self : BaseNegotiator, preferences : list(String), iter_limit : Int)
@@ -59,11 +60,11 @@ class zws3mb_Negotiator(BaseNegotiator):
         return -1;
     def tic_tac_check(self,offer):
         if self.round_count+1==self.iter_limit: #last round
-            print 'Last round behavior'+str(self.__class__),
+            print('Last round behavior'+str(self.__class__), end=' ')
             if self.first:      #We accept/receive this final offer
                 if self.their_score>self.our_score:
                     if self.encounter>=0:   #potentially last time we see this opponenet
-                        print ' Try to accept ',
+                        print(' Try to accept ', end=' ')
                         temp=self.offer
                         self.offer=self.their_offers[len(self.their_offers)-1]
                         val=self.utility()
@@ -75,11 +76,11 @@ class zws3mb_Negotiator(BaseNegotiator):
                             print("Deny, hurts more to accept than deny")
                             return self.preferences[:]                          # or screw both of us!
                     else:                   #can we manipulate them into being softer?
-                        print 'not the last encounter, deny for the first time'
+                        print('not the last encounter, deny for the first time')
                         return self.preferences[:]
                 else:
-                    print("Going last, even if we are ahead, only accept if smart"),
-                    print 'Try to accept,'
+                    print(("Going last, even if we are ahead, only accept if smart"), end=' ')
+                    print('Try to accept,')
                     temp=self.offer
                     self.offer=self.their_offers[len(self.their_offers)-1]
                     val=self.utility()
@@ -95,7 +96,7 @@ class zws3mb_Negotiator(BaseNegotiator):
                     if not self.agreed:     #If it's in them to cut us, offer them something "fair"
                         return offer
                     else:
-                        print 'Come down some',
+                        print('Come down some', end=' ')
                         our_i=self.ith_in_our_space(self.last_offer)
                         return self.my_offerspace[our_i][0]  #
                 else:                                   #continue aggressive policy
@@ -109,7 +110,7 @@ class zws3mb_Negotiator(BaseNegotiator):
     def make_offer(self, offer):
         dec_off=None
         if offer==None and self.round_count==0:
-            print "I am Negotiator A!"
+            print("I am Negotiator A!")
             self.first=True
             self.offer=self.preferences[:]
             return self.offer
@@ -119,16 +120,16 @@ class zws3mb_Negotiator(BaseNegotiator):
                 if self.their_utilities[len(self.their_utilities)-1]<self.their_utilities[len(self.their_utilities)-2]: #coming down
                     their_i=self.ith_in_our_space(offer)
                     last_i=self.ith_in_our_space(self.last_offer)
-                    print 'Haggling:'+str(last_i)+' '+str(their_i)
+                    print('Haggling:'+str(last_i)+' '+str(their_i))
                     if their_i-last_i>0:        #is there room to come down
-                        dec_off= self.my_offerspace[last_i+(their_i-last_i)/2][0]
+                        dec_off= self.my_offerspace[int(last_i+(their_i-last_i)/2)][0]
                     else:
                         dec_off=self.my_offerspace[last_i][0]
                 else:                   #holding out or wrong direction
-                    print 'Being stubborn'
+                    print('Being stubborn')
                     dec_off=self.last_offer
             else:   #their first offer
-                print 'refuse to budge'
+                print('refuse to budge')
                 dec_off=self.preferences[:]
         self.offer=self.tic_tac_check(dec_off)
         self.last_offer=self.offer

@@ -3,6 +3,7 @@ __author__ = 'Zachary'
 from negotiator_base import BaseNegotiator
 from itertools import permutations
 from random import sample
+from functools import reduce
 
 class dummy_Negotiator(BaseNegotiator):
     # initialize(self : BaseNegotiator, preferences : list(String), iter_limit : Int)
@@ -51,13 +52,13 @@ class dummy_Negotiator(BaseNegotiator):
         for i in range(0,len(self.my_offerspace)):
             off,util=self.my_offerspace[i]
             if off==their_offer:
-                return i
+                return int(i)
             if util<=this_util:
-                return i
+                return int(i)
         return -1;
     def tic_tac_check(self,offer):
         if self.round_count+1==self.iter_limit: #last round
-            print 'Last round behavior',
+            print('Last round behavior', end=' ')
             if self.first:      #We accept/receive this final offer
                 return self.their_offers[len(self.their_offers)-1]
                 if self.their_score>self.our_score:
@@ -65,7 +66,7 @@ class dummy_Negotiator(BaseNegotiator):
                         if self.our_score>self.my_offerspace[0][1]:#>len(self.preferences):
                             return self.preferences[:] #spite them
                         else:
-                            print 'Try to accept'
+                            print('Try to accept')
                             temp=self.offer
                             self.offer=self.their_offers[len(self.their_offers)-1]
                             val=self.utility()
@@ -75,17 +76,17 @@ class dummy_Negotiator(BaseNegotiator):
                             else:
                                 return self.preferences[:]                          # or screw both of us!
                     else:                   #can we manipulate them into being softer?
-                        print 'not the last encounter, deny'
+                        print('not the last encounter, deny')
                         return self.preferences[:]
                 else:
-                    print 'Accepted!'
+                    print('Accepted!')
                     return self.their_offers[len(self.their_offers)-1] #we're ahead, can afford to be gracious and accept
             else:               # We make final offer
                 if self.their_score >self.our_score:    #been beating usd
                     if not self.agreed:     #They may have spited us:
                         return offer
                     else:
-                        print 'Come down some',
+                        print('Come down some', end=' ')
                         our_i=self.ith_in_our_space(self.last_offer)
                         return self.my_offerspace[our_i+1][0]  #be ballsy
                 else:
@@ -99,7 +100,7 @@ class dummy_Negotiator(BaseNegotiator):
     def make_offer(self, offer):
         dec_off=None
         if offer==None and self.round_count==0:
-            print "I am Negotiator A!"
+            print("I am Negotiator A!")
             self.first=True
             self.offer=self.preferences[:]
             return self.offer
@@ -108,13 +109,13 @@ class dummy_Negotiator(BaseNegotiator):
             if len(self.their_offers)>1: #not their first offer, always come down
                 their_i=self.ith_in_our_space(offer)
                 last_i=self.ith_in_our_space(self.last_offer)
-                print 'Haggling:'+str(last_i)+' '+str(their_i)
+                print('Haggling:'+str(last_i)+' '+str(their_i))
                 if their_i-last_i>=0:        #is there room to come down
-                    dec_off= self.my_offerspace[last_i+(their_i-last_i)/2][0] #come down half the distance
+                    dec_off= self.my_offerspace[int(last_i+int(their_i-last_i)/2)][0] #come down half the distance
                 else:
                     dec_off=self.my_offerspace[last_i][0] #repeat the last offer
             else:   #their first offer
-                print 'refuse to budge'
+                print('refuse to budge')
                 dec_off=self.preferences[:]
         self.offer=self.tic_tac_check(dec_off)
         self.last_offer=self.offer

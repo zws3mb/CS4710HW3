@@ -36,7 +36,7 @@ def negotiate(num_iterations, negotiator_a, negotiator_b):
 
     # Keep trading offers until we reach an agreement or the iteration limit, whichever comes first
     for i in range(num_iterations):
-        print(offer_a, offer_b)
+        print((offer_a, offer_b))
 
         # Get from each negotiator the utility it received from the offer it most recently gave
         utility = (a_scale * negotiator_a.utility(), b_scale * negotiator_b.utility())
@@ -98,7 +98,7 @@ if __name__ == "__main__":
                 negotiator_b.receive_results(results)
                 if result:
                     numf+=1
-                print("{} negotiation:\n\tNegotiator A: {}\n\tNegotiator B: {}".format("Successful" if result else "Failed", points_a, points_b))
+                print(("{} negotiation:\n\tNegotiator A: {}\n\tNegotiator B: {}".format("Successful" if result else "Failed", points_a, points_b)))
             else:
                 (result, order, count) = negotiate(num_iters, negotiator_b, negotiator_a)
                 # Assign points to each negotiator. Note that if the negotiation failed, each negotiatior receives a negative penalty
@@ -112,6 +112,6 @@ if __name__ == "__main__":
                 negotiator_b.receive_results(results)
                 if result:
                     numf+=1
-                print("{} negotiation:\n\tNegotiator A: {}\n\tNegotiator B: {}".format("Successful" if result else "Failed", points_b, points_a))
-        print(str(numf)+" Successful of "+str(rounds))
-    print("Final result:\n\tNegotiator A: {}\n\tNegotiator B: {}".format(score_a, score_b))
+                print(("{} negotiation:\n\tNegotiator A: {}\n\tNegotiator B: {}".format("Successful" if result else "Failed", points_b, points_a)))
+        print((str(numf)+" Successful of "+str(rounds)))
+    print(("Final result:\n\tNegotiator A: {}\n\tNegotiator B: {}".format(score_a, score_b)))
